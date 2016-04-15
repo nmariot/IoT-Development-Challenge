@@ -29,7 +29,7 @@ namespace Client
 
         private void btnEnvoiMessage_Click(object sender, RoutedEventArgs e)
         {
-            var c = new ApiClient("http://127.0.0.1:85");
+            var c = new ApiClient("http://127.0.0.1:90");
             IRestResponse reponse = c.CallApi("/messages", RestSharp.Method.POST, new Dictionary<string, string>(), 
                 "{  \"id\": \"12\",  \"timestamp\": \"sdf\",  \"sensorType\": 123,  \"value\": 123123}", 
                 new Dictionary<string, string>(), new Dictionary<string, string>(), new Dictionary<string, FileParameter>(), new Dictionary<string, string>(), "application / json") as IRestResponse;

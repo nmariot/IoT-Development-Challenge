@@ -10,6 +10,8 @@ namespace Server
     {
         static void Main(string[] args)
         {
+            new WebServer().Listen();
+            Console.ReadKey();
         }
     }
 }
