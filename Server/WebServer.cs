@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Server
@@ -27,6 +28,9 @@ namespace Server
 
         private void AcceptCallBack(IAsyncResult cb)
         {
+            // Reaccept connections
+            _socket.BeginAccept(AcceptCallBack, _socket);
+
             var s = cb.AsyncState as Socket;
             var s2 = s.EndAccept(cb);
 
@@ -34,16 +38,17 @@ namespace Server
             byte[] buffer = new byte[1024];
             int nbBytes = s2.Receive(buffer);
 
-            // read data 
-            string id, timestamp, sensorType, value;
-            ReadData(buffer, nbBytes, out id, out timestamp, out sensorType, out value);
-            Log.Debug($"id = {id}, timestamp = {timestamp}, sensorType = {sensorType}, value = {value}");
+            // read data  : message or synthesis
+            //string id, timestamp, sensorType, value;
+            //ReadData(buffer, nbBytes, out id, out timestamp, out sensorType, out value);
+            //Log.Debug($"id = {id}, timestamp = {timestamp}, sensorType = {sensorType}, value = {value}");
+
+            // Persist data
+
 
             // Send HTTP 200
             s2.Send(ASCIIEncoding.ASCII.GetBytes("HTTP/1.1 200 OK\n\rContent-Length: 0"));
 
-            // Listen
-            _socket.BeginAccept(AcceptCallBack, _socket);
         }
 
         private void ReadData(byte[] buffer, int nbBytes, out string id, out string timestamp, out string sensorType, out string value)
