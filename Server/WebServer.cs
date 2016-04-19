@@ -16,10 +16,13 @@ namespace Server
         private const int NB_MAX_CONNECTIONS = 100;
         private static readonly IPEndPoint _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 90);
         private Socket _socket;
-        private Storage _storage;
+        private Storage _storage = new Storage();
 
         public void Listen()
-        {
+        {            
+            // Get persisted information
+            _storage.RetrieveStoredMessages();
+
             // Init
             _socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
             _socket.Bind(_endPoint);
@@ -44,7 +47,8 @@ namespace Server
 
             if (req.IsMessage)
             {
-                string id, timestamp, sensorType, value;
+                string id, timestamp;
+                int sensorType, value;
                 req.ReadData(out id, out timestamp, out sensorType, out value);
 
                 _storage.StoreMessage(id, timestamp, sensorType, value);

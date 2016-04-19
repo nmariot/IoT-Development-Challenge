@@ -40,6 +40,8 @@ namespace Client
             var c = new ApiClient("http://127.0.0.1:90");
             IRestResponse reponse = c.CallApi("/synthesis", RestSharp.Method.GET, new Dictionary<string, string>(), null,
                 new Dictionary<string, string>(), new Dictionary<string, string>(), new Dictionary<string, FileParameter>(), new Dictionary<string, string>(), "application/json") as IRestResponse;
+
+            MessageBox.Show(reponse.Content);
         }
     }
 }
