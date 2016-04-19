@@ -16,6 +16,7 @@ namespace Server
         private const int NB_MAX_CONNECTIONS = 100;
         private static readonly IPEndPoint _endPoint = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 90);
         private Socket _socket;
+        private Storage _storage;
 
         public void Listen()
         {
@@ -39,44 +40,26 @@ namespace Server
             // Receive data
             byte[] buffer = new byte[1024];
             int nbBytes = s2.Receive(buffer);
+            var req = new Request(buffer, nbBytes);
 
-            // read data  : message or synthesis
-            //string id, timestamp, sensorType, value;
-            //ReadData(buffer, nbBytes, out id, out timestamp, out sensorType, out value);
-            //Log.Debug($"id = {id}, timestamp = {timestamp}, sensorType = {sensorType}, value = {value}");
+            if (req.IsMessage)
+            {
+                string id, timestamp, sensorType, value;
+                req.ReadData(out id, out timestamp, out sensorType, out value);
 
-            // Persist data
+                _storage.StoreMessage(id, timestamp, sensorType, value);
 
+                // Send HTTP 200
+                s2.Send(ASCIIEncoding.ASCII.GetBytes("HTTP/1.1 200 OK\n\rContent-Length: 0"));
+            }
+            else
+            {
+                string synthesis = _storage.GetSynthesis();
 
-            // Send HTTP 200
-            s2.Send(ASCIIEncoding.ASCII.GetBytes("HTTP/1.1 200 OK\n\rContent-Length: 0"));
+                // Send HTTP 200
+                s2.Send(ASCIIEncoding.ASCII.GetBytes($"HTTP/1.1 200 OK\n\rContent-Length: {synthesis.Length}\n\r{synthesis}"));
+            }
 
-        }
-
-        private void ReadData(byte[] buffer, int nbBytes, out string id, out string timestamp, out string sensorType, out string value)
-        {
-            // TODO : try to optimize (not usie ASCIIEncoding and read directly the array
-            string requete = ASCIIEncoding.ASCII.GetString(buffer, 0, nbBytes);
-            int idxAcc = requete.IndexOf(": \"");
-            int idx = requete.IndexOf("\"", idxAcc + 3);
-
-            // Id
-            id = requete.Substring(idxAcc + 3, idx - idxAcc - 3);
-
-            // timestamp
-            idxAcc = requete.IndexOf(": \"", idxAcc + 3);
-            idx = requete.IndexOf("\"", idxAcc + 3);
-            timestamp = requete.Substring(idxAcc + 3, idx - idxAcc - 3);
-
-            // sensorType
-            idxAcc = requete.IndexOf(": ", idxAcc + 3);
-            idx = requete.IndexOf(" ", idxAcc + 3);
-            sensorType = requete.Substring(idxAcc + 2, idx - idxAcc - 3);
-
-            // value
-            idxAcc = requete.IndexOf(": ", idxAcc + 3);
-            idx = requete.IndexOf("}", idxAcc + 3);
-            value = requete.Substring(idxAcc + 2, idx - idxAcc - 2);
         }
     }
 }

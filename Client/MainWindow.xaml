@@ -16,6 +16,6 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Button Content="Envoi message" Grid.Row="0" Grid.Column="0" Name="btnEnvoiMessage" Click="btnEnvoiMessage_Click"/>
-        <Button Content="Affichage synthèse" Grid.Row="1" Grid.Column="0" Name="btnAffichageSynthese"/>
+        <Button Content="Affichage synthèse" Grid.Row="1" Grid.Column="0" Name="btnAffichageSynthese" Click="btnAffichageSynthese_Click"/>
     </Grid>
 </Window>
