@@ -13,6 +13,8 @@ namespace Server
         public Request(byte[] buffer, int nbBytes)
         {
             _request = ASCIIEncoding.ASCII.GetString(buffer, 0, nbBytes);
+
+            Log.Debug("Requete = " + _request);
         }
 
         public bool IsMessage

@@ -31,7 +31,7 @@ namespace Client
         {
             var c = new ApiClient("http://127.0.0.1:90");
             IRestResponse reponse = c.CallApi("/messages", RestSharp.Method.POST, new Dictionary<string, string>(),
-                "{  \"id\": \"12\",  \"timestamp\": \"sdf\",  \"sensorType\": 123,  \"value\": 123123}",
+                "{  \"id\": \"12\",  \"timestamp\": \"2016-04-24T20:11:00.123\",  \"sensorType\": 123,  \"value\": 123123}",
                 new Dictionary<string, string>(), new Dictionary<string, string>(), new Dictionary<string, FileParameter>(), new Dictionary<string, string>(), "application/json") as IRestResponse;
         }
 

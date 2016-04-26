@@ -19,9 +19,11 @@ namespace Server
         private Storage _storage = new Storage();
 
         public void Listen()
-        {            
-            // Get persisted information
-            _storage.RetrieveStoredMessages();
+        {
+            Log.Debug("WebServer.Listen");
+
+            // Initialise Storage + re-read synthesis / data
+            _storage.Init();
 
             // Init
             _socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
