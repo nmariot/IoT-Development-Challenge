@@ -12,8 +12,7 @@ namespace Server
         [Conditional("DEBUG")]
         public static void Debug(string message)
         {
-            string msg = string.Format("{0:hh:mm:ss} {1}", DateTime.Now, message);
-            Console.WriteLine(msg);
+            string msg = string.Format("{0:hh:mm:ss} {1}", DateTime.Now, message);            
             System.Diagnostics.Debug.WriteLine(msg);
 
         }

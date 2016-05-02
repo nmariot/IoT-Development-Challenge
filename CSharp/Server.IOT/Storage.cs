@@ -13,7 +13,7 @@ namespace Server
     {
         static readonly DateTime _startTime = DateTime.Now;
 
-        static readonly string _path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "data");
+        static readonly string _path = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "data");
 
         /// <summary>
         /// List of synthesis (by sensorType, by minute)
@@ -28,7 +28,7 @@ namespace Server
         public void Init()
         {
             Log.Debug("Storage.Init");
-
+            
             // Create folders and remove old files
             Directory.CreateDirectory(_path);
 
@@ -56,7 +56,7 @@ namespace Server
             //TODO : add lock
             if (!_lstWriters.ContainsKey(sensorType))
             {
-                _lstWriters[sensorType] = new StreamWriter(dataFileName);
+                _lstWriters[sensorType] = new StreamWriter(new FileStream(dataFileName, FileMode.Append));
             }
             _lstWriters[sensorType].WriteLine($"{id};{timestamp};{sensorType};{value}");
 
