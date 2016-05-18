@@ -31,12 +31,15 @@ func testfun() string {
     return testvar
 }
 
-func getdata(keyTime int64, slicesJsonPost *[]JsonPost) {
+func getdata(keyTime int64) []JsonPost {
 	s := strconv.FormatInt(keyTime, 10)
+	slicesJsonPost := make([]JsonPost, 0)
+	fmt.Println("getdata for ", s)
 	val, err := client.LRange(s, 0, -1).Result()
     if err != nil {
         panic(err)
     } else {
+	    
 	    for i := 0; i < len(val); i++ {
 	    	var myJson JsonPost
 	    	tb := []byte(val[i])
@@ -44,10 +47,12 @@ func getdata(keyTime int64, slicesJsonPost *[]JsonPost) {
 		    if err1 != nil {
 		        panic(err1)
 		    } else {
-				slicesJsonPost = append(slicesJsonPost, myJson)
+			    fmt.Printf("Results: %v\n", myJson)
+				slicesJsonPost := append(slicesJsonPost, myJson)
 		    }
 	    }
     }
+    return slicesJsonPost
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -70,12 +75,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				// on initialise un tableau des donnees correspondantes
 				// slicesJsonPost := make([]JsonPost, 1)
-				slicesJsonPost := make([]JsonPost, 0)
-				getdata(initialTime, &slicesJsonPost)
+				_ = getdata(initialTime)
 				
 				for j := 1; j <= iduration; j++ {
 					initialTime = initialTime + 1
-					getdata(initialTime, &slicesJsonPost)
+					_ = getdata(initialTime)
 			        // slicesKey := append(slicesKey, initialTime)
 			    }
 				// fmt.Println("set:", slicesKey)
